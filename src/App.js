@@ -1,68 +1,47 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
-import AppBar from 'material-ui/AppBar';
-import DatePicker from 'material-ui/DatePicker';
-import Drawer from 'material-ui/Drawer';
+
+// local components
+import Run from './Components/Run';
+import Header from './Components/Header';
 
 
-const Header = (props) =>
-    <AppBar title={props.title}
-            iconClassNameRight="muidocs-icon-navigation-expand-more"
-            onLeftIconButtonClick={props.onLeftButtonClick} />
+const Runs = (props) =>
+    <ul>
+        {props.data.map(d =>
+            <Run date={d.date} distance={d.distance} key={d.date} />
+        )}
+    </ul>
 
 
-const SideBar = (props) =>
-    <Drawer open={props.open}
-            docked={false}
-            onRequestChange={props.close}>
-        <Menu>
-            <MenuItem primaryText="One" />
-            <MenuItem primaryText="Two" />
-            <MenuItem primaryText="Three" />
-        </Menu>
-    </Drawer>
+const App = (props) => {
+    const title = "Jogger";
+    const bodyStyle = {
+        'marginRight': '50px',
+    };
+    const runs = [
+        {date: "2018-04-22", distance: 5.2},
+        {date: "2018-04-20", distance: 1.6},
+        {date: "2018-04-18", distance: 3.2},
+        {date: "2017-12-20", distance: 0.5},
+        {date: "2018-04-19", distance: 5.1},
+    ].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-
-class App extends Component {
-    constructor(props, context) {
-        super(props, context);
-
-        this.toggleDrawer = this.toggleDrawer.bind(this);
-
-        this.state = {open: false};
-    }
-
-
-    toggleDrawer() {
-        this.setState({open: !this.state.open});
-    }
-
-    closeDrawer() {
-        this.setState({open: false});
-    }
-
-
-    render() {
-        const title = "Jogger";
-        
-        return (
-            <MuiThemeProvider className="App">
-                <div>
-                    <SideBar close={() => this.setState({open: false})}
-                             open={this.state.open} />
-                    <Header onLeftButtonClick={this.toggleDrawer} title={title} />
-                    <div>
-                        <RaisedButton onClick={this.toggleDrawer} label="Foo" />
-                        <DatePicker hintText="What Date did you run on?" />
-                    </div>
+    console.log(runs);
+    
+    return (
+        <MuiThemeProvider className="App">
+            <div>
+                <Header title={title} />
+                <div style={bodyStyle}>
+                    <Runs data={runs} />
                 </div>
-            </MuiThemeProvider>
-        );
-    }
+            </div>
+        </MuiThemeProvider>
+    );
+
 }
+
 
 export default App;
