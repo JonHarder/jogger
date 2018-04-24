@@ -6,6 +6,7 @@ import Divider from 'material-ui/Divider';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
+import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 
 
 class Header extends Component {
@@ -24,7 +25,8 @@ class Header extends Component {
                 <Drawer open={this.state.open}
                         docked={false}
                         onRequestChange={() => this.setState({open: false})}>
-                    <Menu desktop={false}>
+                    <Menu desktop={!this.props.mobile}>
+                        <MenuItem primaryText="Close" leftIcon={<ArrowBack />} />
                         <MenuItem primaryText="Settings" />
                         <Divider />
                         <MenuItem primaryText="Sign Out" />
