@@ -2,23 +2,12 @@ import './App.css';
 
 import React, {Component} from 'react';
 
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {deepPurple800, purple50} from 'material-ui/styles/colors';
 
 // local components
 import Run from './Components/Run';
 import Header from './Components/Header';
 import screenWidthAware from './Components/screenWidthAware';
-
-const muiTheme = getMuiTheme({
-    palette: {
-        textColor: purple50,
-        canvasColor: deepPurple800,
-        pickerHeaderColor: deepPurple800,
-        primary1Color: deepPurple800
-    }
-});
 
 
 const Runs = (props) =>
@@ -30,12 +19,25 @@ const Runs = (props) =>
 
 
 class Main extends Component {
+    constructor(props, context) {
+        super(props, context);
+
+        const loggedIn = localStorage.getItem('loggedIn');
+        this.state = {
+            loggedIn: JSON.parse(loggedIn) ? true : false
+        };
+
+        this.logIn = this.logIn.bind(this);
+    }
+
+    logIn = () => {
+        const loggedIn = JSON.stringify(!this.state.loggedIn);
+        localStorage.setItem('loggedIn', loggedIn);
+        this.setState({loggedIn: !this.state.loggedIn});
+    }
+
     render() {
         const title = "Jogger";
-        const bodyStyle = {
-            'marginRight': this.props.desktop ? '50px': '0px',
-            'marginLeft': this.props.desktop ? 'inherit': '0px',
-        };
         const runs = [
             {date: "2018-04-22", distance: 5.2},
             {date: "2018-04-20", distance: 1.6},
@@ -45,12 +47,15 @@ class Main extends Component {
         ].sort((a, b) => new Date(a.date) - new Date(b.date));
 
         return (
-            <MuiThemeProvider className="App" muiTheme={muiTheme}>
-                <div style={{backgroundColor: purple50}}>
-                    <Header mobile={!this.props.desktop} title={title} />
-                    <div style={bodyStyle}>
+            <MuiThemeProvider className="App">
+                <div>
+                    <Header mobile={!this.props.desktop}
+                            title={title}
+                            loggedIn={this.state.loggedIn}
+                            toggleLogin={this.logIn} />
+                    {this.state.loggedIn && 
                         <Runs data={runs} />
-                    </div>
+                    }
                 </div>
             </MuiThemeProvider>
         );
