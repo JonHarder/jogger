@@ -10,15 +10,25 @@ class Header extends Component {
     constructor(props, context) {
         super(props, context);
 
+        let value = localStorage.getItem('value');
+        if(value) {
+            value = JSON.parse(value);
+        } else {
+            value = 1;
+        }
+
         this.state = {
-            open: false,
-            value: 1,
+            value: value,
         };
     }
 
-    handleChange = (event, index, value) => this.setState({value});
+    handleChange = (event, index, value) => {
+        localStorage.setItem('value', JSON.stringify(value));
+        this.setState({value});
+    }
 
     render() {
+        const label = this.props.loggedIn ? "Log Out" : "Log In"
         return (
             <Toolbar>
                 <ToolbarGroup firstChild={true}>
@@ -30,7 +40,7 @@ class Header extends Component {
                 <ToolbarGroup>
                     <ToolbarTitle text="Jogger" />
                     <ToolbarSeparator />
-                    <RaisedButton primary={true} label={this.props.loggedIn ? "Log Out" : "Log In"} onClick={this.props.toggleLogin} />
+                    <RaisedButton primary={true} label={label} onClick={this.props.toggleLogin} />
                 </ToolbarGroup>
             </Toolbar>
         );

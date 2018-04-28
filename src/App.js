@@ -3,19 +3,33 @@ import './App.css';
 import React, {Component} from 'react';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import FloatingActionButtom from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 // local components
 import Run from './Components/Run';
 import Header from './Components/Header';
+import Footer from './Components/Footer';
 import screenWidthAware from './Components/screenWidthAware';
 
+import api from './lib/api';
 
-const Runs = (props) =>
-    <ul>
-        {props.data.map(d =>
-            <Run date={d.date} distance={d.distance} key={d.date} />
-        )}
-    </ul>
+
+const Runs = (props) => {
+    const margin = props.desktop ? 10 : 0
+    const style = {
+        width: '90%',
+        marginLeft: `${margin}px`,
+        marginRight: `${margin}px`
+    }
+    return (
+        <ul style={style}>
+            {props.data.map(d =>
+                <Run date={d.date} distance={d.distance} key={d.date} />
+            )}
+        </ul>
+    )
+}
 
 
 class Main extends Component {
@@ -24,10 +38,22 @@ class Main extends Component {
 
         const loggedIn = localStorage.getItem('loggedIn');
         this.state = {
-            loggedIn: JSON.parse(loggedIn) ? true : false
+            loggedIn: JSON.parse(loggedIn) ? true : false,
+            sessions: [],
+            selection: 0,
         };
 
         this.logIn = this.logIn.bind(this);
+
+        this.getSessions()
+    }
+
+    select = (id) => {
+        this.setState({selection: id})
+    }
+
+    getSessions() {
+        api.getSessions().then(sessions => this.setState({sessions}))
     }
 
     logIn = () => {
@@ -38,13 +64,11 @@ class Main extends Component {
 
     render() {
         const title = "Jogger";
-        const runs = [
-            {date: "2018-04-22", distance: 5.2},
-            {date: "2018-04-20", distance: 1.6},
-            {date: "2018-04-18", distance: 3.2},
-            {date: "2017-12-20", distance: 0.5},
-            {date: "2018-04-19", distance: 5.1},
-        ].sort((a, b) => new Date(a.date) - new Date(b.date));
+        const buttonStyle = {
+            bottom: '80px',
+            right: '50px',
+            position: 'fixed',
+        };
 
         return (
             <MuiThemeProvider className="App">
@@ -54,8 +78,12 @@ class Main extends Component {
                             loggedIn={this.state.loggedIn}
                             toggleLogin={this.logIn} />
                     {this.state.loggedIn && 
-                        <Runs data={runs} />
+                        <Runs desktop={this.props.desktop} data={this.state.sessions} />
                     }
+                    <FloatingActionButtom style={buttonStyle}>
+                        <ContentAdd />
+                    </FloatingActionButtom>
+                    <Footer selected={this.state.selection} onChange={this.select} />
                 </div>
             </MuiThemeProvider>
         );
