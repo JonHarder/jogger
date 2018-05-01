@@ -38,7 +38,7 @@ class Header extends Component {
                     </DropDownMenu>
                 </ToolbarGroup>
                 <ToolbarGroup>
-                    <ToolbarTitle text="Jogger" />
+                    <ToolbarTitle text={this.props.title} />
                     <ToolbarSeparator />
                     <RaisedButton primary={true} label={label} onClick={this.props.toggleLogin} />
                 </ToolbarGroup>
